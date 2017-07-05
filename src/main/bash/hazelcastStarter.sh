@@ -12,7 +12,7 @@ pushd ${HAZELCAST_OSS_DIRECTORY}
 mv bin/hazelcast.xml bin/hazelcast.xml.original
 wget -O bin/hazelcast.xml $2
 pushd bin
-/bin/bash `pwd`/start.sh
+/bin/bash `pwd`/start.sh > `pwd`/nohup.out 2>&1
 popd
 popd
 popd

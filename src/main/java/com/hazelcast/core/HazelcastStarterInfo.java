@@ -2,6 +2,7 @@ package com.hazelcast.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -53,7 +54,15 @@ public class HazelcastStarterInfo {
             if (starterExitValue == 0) {
                 // check if we are currently running the stopper
                 if (stopperProcess != null) {
-                    // todo
+                    try {
+                        if (stopperProcess.exitValue() == 0) {
+                            return HazelcastStarterStatus.STOPPED;
+                        } else {
+                            return HazelcastStarterStatus.UNKNOWN;
+                        }
+                    } catch (IllegalThreadStateException e) {
+                        return HazelcastStarterStatus.STOPPING;
+                    }
                 } else {
                     // if not, check PID file existence
                     File pidFile = new File(hazelcastHome + File.separator + "bin", PID_FILE);
@@ -70,7 +79,6 @@ public class HazelcastStarterInfo {
             // not yet starter
             return HazelcastStarterStatus.STARTING;
         }
-        return HazelcastStarterStatus.UNKNOWN;
     }
 
     public boolean isStarted() {
@@ -90,5 +98,15 @@ public class HazelcastStarterInfo {
             // not yet terminated
             return false;
         }
+    }
+
+    public void stop()
+            throws IOException, InterruptedException {
+        if (!isStarted()) {
+            throw new IllegalStateException("Instance is not started");
+        }
+        String stopCommand = String.format("%s%sbin/stop.sh", hazelcastHome, File.separator);
+        stopperProcess = Runtime.getRuntime().exec(stopCommand);
+        stopperProcess.waitFor(30, TimeUnit.SECONDS);
     }
 }

@@ -1,6 +1,7 @@
 package com.hazelcast;
 
 import com.hazelcast.api.AgentRegistration;
+import com.hazelcast.health.HazelcastAgentHealth;
 import com.hazelcast.resources.InstanceAdmin;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
@@ -31,6 +32,9 @@ public class HzAgentApplication extends Application<HzAgentConfiguration> {
     @Override
     public void run(final HzAgentConfiguration configuration,
                     final Environment environment) {
+        // register health check
+        HazelcastAgentHealth health = new HazelcastAgentHealth();
+        environment.healthChecks().register("agentHealth", health);
 
         // register resources
         InstanceAdmin instanceAdmin = new InstanceAdmin(configuration);

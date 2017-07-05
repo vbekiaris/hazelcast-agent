@@ -39,6 +39,7 @@ public class InstanceAdmin {
     }
 
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
     public List<InstanceInfo> getInstances() {
         List<InstanceInfo> instances = new ArrayList<>(versionStarterInfo.size());
         for (Map.Entry<Integer, HazelcastStarterInfo> entry : versionStarterInfo.entrySet()) {
@@ -70,6 +71,7 @@ public class InstanceAdmin {
 
     @Path("/{id}/status")
     @GET
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getStatus(@PathParam("id") int id) {
         HazelcastStarterInfo info = versionStarterInfo.get(id);
         if (info == null) {
@@ -77,5 +79,27 @@ public class InstanceAdmin {
         }
 
         return Response.ok().entity(info.getStatus().getId()).build();
+    }
+
+    @Path("/{id}/stop")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response stopInstance(@PathParam("id") int id) {
+        HazelcastStarterInfo info = versionStarterInfo.get(id);
+        if (info == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        if (!info.isStarted()) {
+            return Response.serverError().entity("Instance " + id + " is not started").build();
+        }
+
+        try {
+            info.stop();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.ok().entity("Stop command was issued but did not finish on time, check instance status").build();
+        }
+        return Response.ok().build();
     }
 }
