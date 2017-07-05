@@ -1,6 +1,7 @@
 package com.hazelcast;
 
 import com.hazelcast.api.AgentRegistration;
+import com.hazelcast.resources.InstanceAdmin;
 import io.dropwizard.Application;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
@@ -30,6 +31,11 @@ public class HzAgentApplication extends Application<HzAgentConfiguration> {
     @Override
     public void run(final HzAgentConfiguration configuration,
                     final Environment environment) {
+
+        // register resources
+        InstanceAdmin instanceAdmin = new InstanceAdmin(configuration);
+        environment.jersey().register(instanceAdmin);
+
         // register the agent to ManCenter
         Client c = ClientBuilder.newClient();
         WebTarget target = c.target(configuration.getManCenterBaseUrl());

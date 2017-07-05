@@ -5,3 +5,4 @@ logging:
 manCenterBaseUrl: http://192.168.2.29:8083/mancenter/rest
 name: obelix
 port: 8080
+scriptPath: /Users/bekiarisv/workspace/personal/github/vbekiaris/hazelcast-agent/src/main/bash

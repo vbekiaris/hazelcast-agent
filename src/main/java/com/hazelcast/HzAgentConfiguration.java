@@ -19,6 +19,9 @@ public class HzAgentConfiguration extends Configuration {
     @Min(1)
     private int port;
 
+    @NotEmpty
+    private String scriptPath;
+
     public HzAgentConfiguration() {
     }
 
@@ -35,5 +38,10 @@ public class HzAgentConfiguration extends Configuration {
     @JsonProperty
     public int getPort() {
         return port;
+    }
+
+    @JsonProperty
+    public String getScriptPath() {
+        return scriptPath;
     }
 }
