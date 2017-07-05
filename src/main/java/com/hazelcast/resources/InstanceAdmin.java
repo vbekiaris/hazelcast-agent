@@ -12,10 +12,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileAttribute;
 import java.util.ArrayList;
@@ -63,13 +61,6 @@ public class InstanceAdmin {
         ////
         // Process will get stuck if it fills its out/err stream buffers
         // for now there's no problem since everything is set to silent but just taking a note here
-        StringBuffer output = new StringBuffer();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(starter.getErrorStream()));
-        String line = "";
-        while ((line = reader.readLine())!= null) {
-            output.append(line + "\n");
-        }
-        System.out.println("### " + output);
         ////
         HazelcastStarterInfo starterInfo = new HazelcastStarterInfo(version, workingDir, starter);
         int thisInstance = instanceId.incrementAndGet();
